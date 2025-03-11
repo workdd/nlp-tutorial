@@ -4,10 +4,47 @@
 Seq2Seq는 2014년에 발표된 "Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation" 논문에서 소개된 모델로, 한 시퀀스를 다른 시퀀스로 변환하는 작업에 사용됩니다. 주로 기계 번역, 요약, 대화 생성 등에 활용됩니다.
 
 ## 주요 특징
-- 인코더-디코더 구조
+- 인코더-디코더 구조를 통한 시퀀스 간 변환
 - 가변 길이 입력을 가변 길이 출력으로 변환
 - 인코더에서 입력 시퀀스의 정보를 압축
-- 디코더에서 압축된 정보를 바탕으로 출력 시퀀스 생성
+- 디코더에서 압축된 정보를 기반으로 출력 생성
+
+## 모델 구조 상세
+Seq2Seq은 다음과 같은 구조로 이루어져 있습니다:
+
+1. **인코더(Encoder)**:
+   - 입력 시퀀스를 처리하는 RNN/LSTM/GRU
+   - 각 입력 토큰을 순차적으로 처리
+   - 전체 입력 시퀀스의 정보를 컨텍스트 벡터(context vector)로 압축
+   - 일반적으로 마지막 은닉 상태를 컨텍스트 벡터로 사용
+
+2. **디코더(Decoder)**:
+   - 출력 시퀀스를 생성하는 RNN/LSTM/GRU
+   - 인코더의 컨텍스트 벡터를 초기 은닉 상태로 사용
+   - 자기회귀적(autoregressive) 방식으로 토큰 생성
+   - 이전 시점의 출력을 다음 시점의 입력으로 사용
+   - 특수 토큰 
+
+## 수식 및 수학적 설명
+- 인코더의 RNN/LSTM/GRU 계산:
+  - $h_t = f(W_{ih}x_t + W_{hh}h_{t-1} + b_h)$
+  - $c_t = f(W_{ic}x_t + W_{hc}h_{t-1} + b_c)$
+- 디코더의 RNN/LSTM/GRU 계산:
+  - $h_t = f(W_{ih}y_t + W_{hh}h_{t-1} + b_h)$
+  - $c_t = f(W_{ic}y_t + W_{hc}h_{t-1} + b_c)$
+- 출력 계산:
+  - $y_t = softmax(W_{ho}h_t + b_o)$
+
+## 하이퍼파라미터
+- 인코더와 디코더의 은닉 상태 크기
+- 인코더와 디코더의 층 수
+- 임베딩 크기
+- 드롭아웃 비율
+
+## 계산 복잡도
+- 인코더: $O(T \times H \times D)$
+- 디코더: $O(T \times H \times D)$
+- 전체 모델: $O(2 \times T \times H \times D)$
 
 ## 구현 내용
 이 노트북에서는 PyTorch를 사용하여 Seq2Seq 모델을 구현하고 있습니다:
